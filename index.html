@@ -1,0 +1,196 @@
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">google.load("jquery", "1.3.2");</script>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="./resources/style.css" media="screen" />
+
+<html lang="en">
+
+<head>
+    <title>RelPose: Probabilistic Relative Rotation Estimation</title>
+    <!-- Facebook automatically scrapes this. Go to https://developers.facebook.com/tools/debug/
+        if you update and want to force Facebook to re-scrape. -->
+    <meta property="og:image" content="./resources/suitcase_teaser.gif" />
+    <meta property="og:image:type" content="image/gif" />
+    <meta property="og:image:width" content="300" />
+    <meta property="og:image:height" content="128" />
+    <meta property="og:site_name" content="RelPose" />
+    <meta property="og:title"
+        content="RelPose: Predicting Probabilistic Relative Rotation for Single Objects in the Wild" />
+    <meta property="og:description"
+        content="A data-driven approach for sparse-view pose estimation for generic objects in the wild. From a pair of images, our approach predicts a distribution over relative rotations. From a set of images, our approach predicts a set of coherent poses." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Add your Google Analytics tag here -->
+    <!--
+    <script async
+            src="https://www.googletagmanager.com/gtag/js?id=UA-97476543-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'UA-97476543-1');
+    </script>
+    -->
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            RelPose: Predicting Probabilistic Relative Rotation for Single Objects in the Wild
+        </div>
+
+        <br>
+        <br>
+
+        <div class="author">
+            <a href="https://jasonyzhang.com/">Jason Y. Zhang</a>
+        </div>
+        <div class="author">
+            <a href="https://www.cs.cmu.edu/~deva/">Deva Ramanan</a>
+        </div>
+        <div class="author">
+            <a href="https://shubhtuls.github.io/">Shubham Tulsiani</a>
+        </div>
+        <br>
+        <br>
+
+        <div class="affiliation">Carnegie Mellon University</div>
+
+
+        <br>
+        <br>
+
+        <div class="links"><a href="">[Paper]</a></div>
+        <div class="links"><a href="">[Video]</a></div>
+        <div class="links"><a href="https://github.com/jasonyzhang/relpose">[Code]</a></div>
+
+        <br>
+        <br>
+        <div class="teaser">
+
+            <div class="teaser-left preview">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/suitcase_teaser.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="teaser-right">
+                <img src="./resources/cameras.jpg" width="100%">
+                <br>
+            </div>
+
+            <strong>Probabilistic Camera Rotation Estimation for Generic Objects.</strong> <i>Left:</i>
+            Given two images of the same object, we predict a conditional distribution of relative
+            camera viewpoint (rotation) that effectively handles symmetries and pose ambiguities.
+            <i>Right:</i> Given a set of images, our approach outputs a configuration of camera rotations.
+
+        </div>
+
+        <br><br>
+        <hr>
+
+        <h1>Abstract</h1>
+        <p>
+            We describe a data-driven method for inferring the camera viewpoints given
+            multiple images of an arbitrary object. This task is a core component of
+            classic geometric pipelines such as SfM and SLAM, and also serves as a vital
+            pre-processing requirement for contemporary neural approaches (e.g. NeRF) to
+            object reconstruction and view synthesis. In contrast to existing
+            correspondence-driven methods that do not perform well given sparse views,
+            we propose a top-down prediction based approach for estimating camera viewpoints.
+            Our key technical insight is the use of an energy-based formulation for
+            representing distributions over relative camera rotations, thus allowing us
+            to explicitly represent multiple camera modes arising from object symmetries
+            or views. Leveraging these relative predictions, we jointly estimate a consistent
+            set of camera rotations from multiple images. We show that our approach
+            outperforms state-of-the-art SfM and SLAM methods given sparse images on
+            both seen and unseen categories. Further, our probabilistic approach
+            significantly outperforms directly regressing relative poses, suggesting
+            that modeling multimodality is important for coherent joint reconstruction.
+            We demonstrate that our system can be a stepping stone toward in-the-wild
+            reconstruction from multi-view datasets.
+        </p>
+
+        <br><br>
+        <hr>
+
+        <h1>Paper</h1>
+
+        <div class="paper-thumbnail">
+            <a href="https://arxiv.org">
+                <img class="layered-paper-big" width="100%" src="./resources/paper_thumbnail.jpg"
+                    alt="Paper thumbnail." />
+            </a>
+        </div>
+        <div class="paper-info">
+            <h4>RelPose: Predicting Probabilistic Relative Rotation for Single Objects in the Wild</h4>
+            <h5>
+                Jason Y. Zhang, Deva Ramanan, and Shubham Tulsiani
+            </h5>
+            <pre><code>@InProceedings{zhang2022relpose,
+    title = {{RelPose}: Predicting Probabilistic Relative Rotation for Single Objects in the Wild},
+    author = {Zhang, Jason Y. and Ramanan, Deva and Shubham, Tulsiani},
+    booktitle = {European Conference on Computer Vision},
+    year = {2022},
+}</code></pre>
+        </div>
+
+        <br><br>
+        <hr><br>
+
+        <h1>Video</h1>
+
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameBorder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        </div>
+
+        <br><br>
+        <hr>
+
+        <h1>Learned Pairwise Distributions</h1>
+
+        <br>
+
+        <div>
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/backpack_218_22998_47450_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/bicycle_430_60627_118124_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/bowl_69_5465_12831_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/backpack_218_22998_47450_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <br><br>
+        <hr>
+        <h1>Acknowledgements</h1>
+        <p>
+            We would like to thank Gengshan Yang, Jonathon Luiten, Brian Okorn, and Elliot Wu for helpful feedback and
+            discussion. This work was supported in part by the NSF GFRP (Grant No. DGE1745016), Singapore DSTA, and CMU
+            Argo AI Center for Autonomous Vehicle Research.
+            <a href="https://github.com/jasonyzhang/webpage-template">Webpage Template</a>.
+        </p>
+
+        <br><br>
+    </div>
+
+</body>
+
+</html>
