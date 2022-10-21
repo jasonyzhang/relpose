@@ -1,0 +1,14 @@
+antialiased-cnns
+black
+cython
+flake8
+gdown
+healpy
+ipdb
+isort
+jupyter
+numpy
+opencv-python
+plotly
+tensorboard
+tqdm
