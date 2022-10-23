@@ -203,5 +203,5 @@ class RelPose(nn.Module):
             recursion_level=recursion_level,
         )
         probabilities = torch.softmax(logits, dim=-1)
-        probabilities = probabilities * num_queries / np.pi ** 2
+        probabilities = probabilities * num_queries / np.pi**2
         return probabilities[:, 0]

@@ -142,7 +142,12 @@ def visualize_so3_probabilities(
         ax.set_yticklabels([])
         ax.set_xticks(np.arange(0, 2 * np.pi, np.pi / 2))
         ax.set_xticklabels(
-            [r"90$\degree$", r"180$\degree$", r"270$\degree$", r"0$\degree$",],
+            [
+                r"90$\degree$",
+                r"180$\degree$",
+                r"270$\degree$",
+                r"0$\degree$",
+            ],
             fontsize=12,
         )
         ax.spines["polar"].set_visible(False)

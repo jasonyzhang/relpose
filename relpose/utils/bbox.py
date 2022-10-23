@@ -32,6 +32,7 @@ def square_bbox(bbox, padding=0.0, astype=None):
     extents = (bbox[2:] - bbox[:2]) / 2
     s = max(extents) * (1 + padding)
     square_bbox = np.array(
-        [center[0] - s, center[1] - s, center[0] + s, center[1] + s], dtype=astype,
+        [center[0] - s, center[1] - s, center[0] + s, center[1] + s],
+        dtype=astype,
     )
     return square_bbox

@@ -5,8 +5,8 @@ from relpose.dataset.co3dv1 import Co3dDataset
 
 def get_dataloader(
     batch_size=64,
-    dataset="co3d",
-    category=("tv",),
+    dataset="co3dv1",
+    category=("apple",),
     split="train",
     shuffle=True,
     num_workers=8,
@@ -17,7 +17,10 @@ def get_dataloader(
         num_workers = 0
     if dataset == "co3dv1":
         dataset = Co3dDataset(
-            category=category, split=split, num_images=num_images, debug=debug,
+            category=category,
+            split=split,
+            num_images=num_images,
+            debug=debug,
         )
     else:
         raise Exception(f"Unknown dataset: {dataset}")
