@@ -2,37 +2,38 @@
 <script type="text/javascript">google.load("jquery", "1.3.2");</script>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="./resources/style.css" media="screen" />
-
+<link rel="icon" type="image/x-icon" href="./resources/favicon.ico">
 <html lang="en">
 
 <head>
     <title>RelPose: Probabilistic Relative Rotation Estimation</title>
-    <!-- Facebook automatically scrapes this. Go to https://developers.facebook.com/tools/debug/
-        if you update and want to force Facebook to re-scrape. -->
-    <meta property="og:image" content="./resources/suitcase_teaser.gif" />
+    <meta property="og:type" content="video.other">
+    <meta property="og:image" content="https://jasonyzhang.com/relpose/resources/suitcase_teaser.gif" />
     <meta property="og:image:type" content="image/gif" />
-    <meta property="og:image:width" content="300" />
-    <meta property="og:image:height" content="128" />
+    <meta property="og:image:width" content="450" />
+    <meta property="og:image:height" content="180" />
     <meta property="og:site_name" content="RelPose" />
     <meta property="og:title"
         content="RelPose: Predicting Probabilistic Relative Rotation for Single Objects in the Wild" />
     <meta property="og:description"
         content="A data-driven approach for sparse-view pose estimation for generic objects in the wild. From a pair of images, our approach predicts a distribution over relative rotations. From a set of images, our approach predicts a set of coherent poses." />
+    <meta property="og:video" content="https://jasonyzhang.com/relpose/resources/suitcase_teaser.mp4">
+    <meta property="og:video:url" content="https://jasonyzhang.com/relpose/resources/suitcase_teaser.mp4">
+    <meta property="og:video:secure_url" content="https://jasonyzhang.com/relpose/resources/suitcase_teaser.mp4">
+    <meta property="og:video:type" content="video/mp4">
+    <meta property="og:video:width" content="2500">
+    <meta property="og:video:height" content="1000">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Add your Google Analytics tag here -->
-    <!--
-    <script async
-            src="https://www.googletagmanager.com/gtag/js?id=UA-97476543-1"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97476543-1"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            dataLayer.push(arguments);
-        }
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
+
         gtag('config', 'UA-97476543-1');
     </script>
-    -->
 
 </head>
 
@@ -58,13 +59,13 @@
         <br>
 
         <div class="affiliation">Carnegie Mellon University</div>
-
-
+        <br> <br>
+        <div class="links">In ECCV 2022</div>
         <br>
         <br>
 
-        <div class="links"><a href="">[Paper]</a></div>
-        <div class="links"><a href="">[Video]</a></div>
+        <div class="links"><a href="./resources/Relpose_ECCV_2022.pdf">[Paper]</a></div>
+        <div class="links"><a href="https://www.youtube.com/watch?v=6R5pBP5oC_I">[Video]</a></div>
         <div class="links"><a href="https://github.com/jasonyzhang/relpose">[Code]</a></div>
 
         <br>
@@ -118,8 +119,11 @@
 
         <h1>Paper</h1>
 
+        <div class="links"><a href="https://arxiv.org/abs/2208.05963">[ArXiv]</a></div>
+
+        <br>
         <div class="paper-thumbnail">
-            <a href="https://arxiv.org">
+            <a href="./resources/Relpose_ECCV_2022.pdf">
                 <img class="layered-paper-big" width="100%" src="./resources/paper_thumbnail.jpg"
                     alt="Paper thumbnail." />
             </a>
@@ -131,7 +135,7 @@
             </h5>
             <pre><code>@InProceedings{zhang2022relpose,
     title = {{RelPose}: Predicting Probabilistic Relative Rotation for Single Objects in the Wild},
-    author = {Zhang, Jason Y. and Ramanan, Deva and Shubham, Tulsiani},
+    author = {Zhang, Jason Y. and Ramanan, Deva and Tulsiani, Shubham},
     booktitle = {European Conference on Computer Vision},
     year = {2022},
 }</code></pre>
@@ -143,7 +147,7 @@
         <h1>Video</h1>
 
         <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameBorder="0"
+            <iframe src="https://www.youtube.com/embed/6R5pBP5oC_I" frameBorder="0"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen></iframe>
         </div>
@@ -153,6 +157,24 @@
 
         <h1>Learned Pairwise Distributions</h1>
 
+        <div width="80%">
+
+            <video autoplay loop muted playsinline width="100%">
+                <source src="./resources/visualize_camera_small.mp4" type="video/mp4">
+            </video>
+
+            <strong>Interpreting Distributions of Relative Rotations.</strong>
+            Here, we render new viewpoints produced
+            by applying a relative rotation to the camera for Image 1. Inspired by
+            <a href="https://implicit-pdf.github.io">Implicit-PDF</a>, we visualize
+            rotation matrices by projecting them onto a 2-sphere where the
+            x-axis represents <i>yaw</i>, y-axis represents <i>pitch</i>, and color
+            represents <i>roll</i>. In the plots below, we visualize the distribution of
+            relative rotations, where each circle corresponds to a query rotation. The
+            size of the circle is proportional to its probability. Rotations with
+            negligible probability are omitted.
+        </div>
+        <br><br>
         <br>
 
         <div>
@@ -173,18 +195,33 @@
             </div>
             <div class="results">
                 <video autoplay loop muted playsinline width="100%">
-                    <source src="./resources/videos/backpack_218_22998_47450_ind010.mp4" type="video/mp4">
+                    <source src="./resources/videos/cup_28_976_2843_ind010.mp4" type="video/mp4">
                 </video>
             </div>
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/bottle_34_1431_4507_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/handbag_396_49516_97650_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+
+        <br><br>
+
+        <div class="links" style="max-width: 500px;">
+            <a href="https://github.com/jasonyzhang/relpose">[Github]</a>
         </div>
 
         <br><br>
         <hr>
         <h1>Acknowledgements</h1>
         <p>
-            We would like to thank Gengshan Yang, Jonathon Luiten, Brian Okorn, and Elliot Wu for helpful feedback and
-            discussion. This work was supported in part by the NSF GFRP (Grant No. DGE1745016), Singapore DSTA, and CMU
-            Argo AI Center for Autonomous Vehicle Research.
+            This work was supported in part by the NSF GFRP (Grant No. DGE1745016), Singapore DSTA,
+            and CMU Argo AI Center for Autonomous Vehicle Research.
             <a href="https://github.com/jasonyzhang/webpage-template">Webpage Template</a>.
         </p>
 

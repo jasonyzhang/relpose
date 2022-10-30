@@ -1,0 +1,225 @@
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">google.load("jquery", "1.3.2");</script>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="./resources/style.css" media="screen" />
+<link rel="icon" type="image/x-icon" href="./resources/favicon.ico">
+<html lang="en">
+
+<head>
+    <title>RelPose: Probabilistic Relative Rotation Estimation</title>
+    <meta property="og:type" content="video.other">
+    <meta property="og:image" content="https://jasonyzhang.com/relpose/resources/suitcase_teaser.gif" />
+    <meta property="og:image:type" content="image/gif" />
+    <meta property="og:image:width" content="450" />
+    <meta property="og:image:height" content="180" />
+    <meta property="og:site_name" content="RelPose" />
+    <meta property="og:title"
+        content="RelPose: Predicting Probabilistic Relative Rotation for Single Objects in the Wild" />
+    <meta property="og:description"
+        content="A data-driven approach for sparse-view pose estimation for generic objects in the wild. From a pair of images, our approach predicts a distribution over relative rotations. From a set of images, our approach predicts a set of coherent poses." />
+    <meta property="og:video" content="https://jasonyzhang.com/relpose/resources/suitcase_teaser.mp4">
+    <meta property="og:video:url" content="https://jasonyzhang.com/relpose/resources/suitcase_teaser.mp4">
+    <meta property="og:video:secure_url" content="https://jasonyzhang.com/relpose/resources/suitcase_teaser.mp4">
+    <meta property="og:video:type" content="video/mp4">
+    <meta property="og:video:width" content="2500">
+    <meta property="og:video:height" content="1000">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-97476543-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-97476543-1');
+    </script>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            RelPose: More Qualitative Results
+        </div>
+
+        <br>
+        <br>
+
+        <h2>Learned Pairwise Distributions</h2>
+
+        <br>
+
+        <div>
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/bottle_34_1431_4507_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/car_106_12662_23043_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/hydrant_235_24641_51707_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/plant_197_21209_41847_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/handbag_396_49516_97650_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/bowl_69_5465_12831_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/bicycle_373_41840_83504_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/cup_28_976_2843_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/teddybear_395_49345_97382_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/backpack_218_22998_47450_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/plant_188_20319_36755_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/carrot_223_23574_49752_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/handbag_31_1278_3933_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/car_411_56081_108572_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/teddybear_208_22015_45658_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/motorcycle_359_37731_71933_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/hotdog_379_44682_89038_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/hydrant_167_18184_34441_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/hairdryer_54_3215_9769_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/hydrant_286_30158_58343_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/bicycle_430_60627_118124_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/motorcycle_362_38288_75359_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/hotdog_198_21295_42102_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+
+
+            <div class="results">
+                <video autoplay loop muted playsinline width="100%">
+                    <source src="./resources/videos/bicycle_208_22022_45723_ind010.mp4" type="video/mp4">
+                </video>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

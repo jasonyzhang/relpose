@@ -62,7 +62,7 @@ body {
 }
 
 .results {
-    width: 40%;
+    width: 32%;
 }
 
 img {
@@ -75,7 +75,7 @@ img {
     position: relative;
     overflow: hidden;
     width: 80%;
-    padding-top: 45%;
+    padding-top: 45.2%;
     /* Formula for 16:9 Aspect Ratio: width * 9 / 16 */
 }
 
@@ -146,10 +146,12 @@ h2 {
 
 h4 {
     text-align: left;
+    margin: 15px 0;
 }
 
 h5 {
     text-align: left;
+    margin: 10px 0;
 }
 
 div {
@@ -238,14 +240,6 @@ td {
     text-align: center;
 }
 
-.vert-black {
-    /* border-right: 1px solid rgb(34, 33, 33);*/
-}
-
-.vert-gray {
-    /* border-right: 1px solid rgb(177, 177, 177);*/
-}
-
 model-viewer {
     display: block;
     height: 200px;
@@ -256,10 +250,4 @@ model-viewer {
     --poster-color: #eee;
     border-color: black;
     border-width: 1px;
-}
-
-#rot {
-    -webkit-transform: rotate(-90deg);
-    -moz-transform: rotate(-90deg);
-    width: 100px;
 }
