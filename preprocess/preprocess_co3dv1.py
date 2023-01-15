@@ -14,6 +14,7 @@ Usage:
 import argparse
 import gzip
 import json
+import os
 import os.path as osp
 from glob import glob
 
@@ -83,6 +84,7 @@ def precompute_bbox(co3d_v1_dir, category, output_dir):
         except IndexError:
             ipdb.set_trace()
     output_file = osp.join(output_dir, f"{category}_bbox.jgz")
+    os.makedirs(output_dir, exist_ok=True)
     with gzip.open(output_file, "w") as f:
         f.write(json.dumps(bboxes).encode("utf-8"))
 

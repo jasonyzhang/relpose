@@ -11,6 +11,10 @@ def generate_random_rotations(n=1, device="cpu"):
     return quaternion_to_matrix(quats)
 
 
+def generate_superfibonacci(n=1):
+    pass
+
+
 def generate_equivolumetric_grid(recursion_level=3):
     """
     Generates an equivolumetric grid on SO(3).

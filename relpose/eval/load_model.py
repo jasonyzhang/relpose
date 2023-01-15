@@ -5,6 +5,7 @@ import os.path as osp
 import torch
 
 from relpose.models import RelPose
+from relpose.dataset import Co3dv1Dataset
 
 
 def get_model(checkpoint, device="cuda:0"):
@@ -32,3 +33,11 @@ def get_model(checkpoint, device="cuda:0"):
     relpose.load_state_dict(pretrained_weights)
     relpose.eval()
     return relpose, args
+
+
+def get_eval_dataset(category, split, dataset="co3dv1"):
+    if dataset == "co3dv1":
+        dataset = Co3dv1Dataset(category, split, random_aug=False)
+    else:
+        raise ValueError(f"Unknown dataset {dataset}")
+    return dataset

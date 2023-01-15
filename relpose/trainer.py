@@ -19,7 +19,7 @@ from relpose.dataset.co3dv1 import TEST_CATEGORIES, TRAINING_CATEGORIES
 from relpose.eval.eval_pairwise import evaluate_pairwise
 from relpose.models import RelPose, RelPoseRegressor, generate_hypotheses
 from relpose.utils.geometry import generate_noisy_rotation
-from relpose.utils.visualization import unnormalize_image, visualize_so3_probabilities
+from relpose.utils.visualize import unnormalize_image, visualize_so3_probabilities
 
 matplotlib.use("Agg")
 

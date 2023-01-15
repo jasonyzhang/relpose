@@ -1,6 +1,5 @@
 """
-Re-implementation of Co3dDataset with more general bounding box crop augmentation
-(and new data split).
+CO3Dv1 dataset.
 """
 
 import gzip
@@ -79,7 +78,7 @@ Image.MAX_IMAGE_PIXELS = None
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
-class Co3dDataset(Dataset):
+class Co3dv1Dataset(Dataset):
     def __init__(
         self,
         category=("all",),

@@ -1,12 +1,12 @@
 import torch
 
-from relpose.dataset.co3dv1 import Co3dDataset
+from relpose.dataset.co3dv1 import Co3dv1Dataset
 
 
 def get_dataloader(
     batch_size=64,
     dataset="co3d",
-    category=("tv",),
+    category=("apple",),
     split="train",
     shuffle=True,
     num_workers=8,
@@ -16,7 +16,7 @@ def get_dataloader(
     if debug:
         num_workers = 0
     if dataset == "co3dv1":
-        dataset = Co3dDataset(
+        dataset = Co3dv1Dataset(
             category=category, split=split, num_images=num_images, debug=debug,
         )
     else:
