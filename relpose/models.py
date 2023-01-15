@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 
 from relpose.utils.geometry import (
-    generate_equivolumetric_grid,
+    generate_superfibonacci,
     generate_random_rotations,
 )
 
@@ -45,7 +45,6 @@ class RelPose(nn.Module):
         num_pe_bases=8,
         num_layers=4,
         hidden_size=256,
-        recursion_level=3,
         num_queries=50000,
         sample_mode="random",
         freeze_encoder=False,
@@ -56,15 +55,12 @@ class RelPose(nn.Module):
             num_pe_bases (int): Number of positional encoding bases.
             num_layers (int): Number of layers in the network.
             hidden_size (int): Size of the hidden layer.
-            recursion_level (int): Recursion level for healpix if using equivolumetric
-                sampling.
             num_queries (int): Number of rotations to sample if using random sampling.
             sample_mode (str): Sampling mode. Can be equivolumetric or random.
         """
         super().__init__()
         if feature_extractor is None:
             feature_extractor = get_feature_extractor()
-        self.recursion_level = recursion_level
         self.num_queries = num_queries
         self.sample_mode = sample_mode
 
@@ -116,7 +112,6 @@ class RelPose(nn.Module):
         features1=None,
         features2=None,
         gt_rotation=None,
-        recursion_level=None,
         num_queries=None,
         queries=None,
     ):
@@ -146,18 +141,15 @@ class RelPose(nn.Module):
         assert batch_size == features2.size(0)
         features = features.reshape(batch_size, -1)  # (B, 4096)
         if queries is None:
+            if num_queries is None:
+                num_queries = self.num_queries
             if self.sample_mode == "equivolumetric":
-                if recursion_level is None:
-                    recursion_level = self.recursion_level
-                if recursion_level not in self.equi_grid:
-                    self.equi_grid[recursion_level] = generate_equivolumetric_grid(
-                        recursion_level
+                if num_queries not in self.equi_grid:
+                    self.equi_grid[num_queries] = generate_superfibonacci(
+                        num_queries, device="cpu"
                     )
-                queries = self.equi_grid[recursion_level].to(images1.device)
-                num_queries = len(queries)
+                queries = self.equi_grid[num_queries].to(images1.device)
             elif self.sample_mode == "random":
-                if num_queries is None:
-                    num_queries = self.num_queries
                 queries = generate_random_rotations(num_queries, device=images1.device)
             else:
                 raise Exception(f"Unknown sampling mode {self.sample_mode}.")
@@ -203,5 +195,5 @@ class RelPose(nn.Module):
             recursion_level=recursion_level,
         )
         probabilities = torch.softmax(logits, dim=-1)
-        probabilities = probabilities * num_queries / np.pi**2
+        probabilities = probabilities * num_queries / np.pi ** 2
         return probabilities[:, 0]

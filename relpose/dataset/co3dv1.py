@@ -15,7 +15,7 @@ from torchvision import transforms
 from relpose.utils.bbox import square_bbox
 
 CO3D_DIR = "data/co3d_v1"
-CO3D_ANNOTATION_DIR = "data/co3d_annotations"
+CO3D_ANNOTATION_DIR = "data/co3dv1_annotations"
 
 TRAINING_CATEGORIES = [
     "apple",

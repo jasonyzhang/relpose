@@ -5,7 +5,7 @@ from relpose.dataset.co3dv1 import Co3dv1Dataset
 
 def get_dataloader(
     batch_size=64,
-    dataset="co3d",
+    dataset="co3dv1",
     category=("apple",),
     split="train",
     shuffle=True,

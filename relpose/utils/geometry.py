@@ -11,13 +11,40 @@ def generate_random_rotations(n=1, device="cpu"):
     return quaternion_to_matrix(quats)
 
 
-def generate_superfibonacci(n=1):
-    pass
+def generate_superfibonacci(n=1, device="cpu"):
+    """
+    Samples n rotations equivolumetrically using a Super-Fibonacci Spiral.
+    
+    Reference: Marc Alexa, Super-Fibonacci Spirals. CVPR 22.
+
+    Args:
+        n (int): Number of rotations to sample.
+        device (str): CUDA Device. Defaults to CPU.
+    
+    Returns:
+        (tensor): Rotations (n, 3, 3).
+    """
+    phi = np.sqrt(2.0)
+    psi = 1.533751168755204288118041
+    ind = torch.arange(n, device=device)
+    s = ind + 0.5
+    r = torch.sqrt(s / n)
+    R = torch.sqrt(1.0 - s / n)
+    alpha = 2 * np.pi * s / phi
+    beta = 2.0 * np.pi * s / psi
+    Q = torch.stack([
+        r * torch.sin(alpha),
+        r * torch.cos(alpha),
+        R * torch.sin(beta),
+        R * torch.cos(beta),
+    ], 1)
+    return quaternion_to_matrix(Q).float()
 
 
 def generate_equivolumetric_grid(recursion_level=3):
     """
-    Generates an equivolumetric grid on SO(3).
+    Generates an equivolumetric grid on SO(3). Deprecated in favor of super-fibonacci
+    which is more efficient and does not require additional dependencies.
 
     Uses a Healpix grid on S2 and then tiles 6 * 2 ** recursion level over 2pi.
 

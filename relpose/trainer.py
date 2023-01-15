@@ -49,12 +49,6 @@ def get_parser():
     parser.add_argument("--dataset", type=str, default="co3dv1")
     parser.add_argument("--name", type=str, default="")
     parser.add_argument(
-        "--recursion_level",
-        type=int,
-        default=3,
-        help="Recursion level for healpix sampling. (3 corresponds to 36k)",
-    )
-    parser.add_argument(
         "--sampling_mode",
         type=str,
         default="equivolumetric",
@@ -92,6 +86,7 @@ class Trainer(object):
         self.batch_size = args.batch_size
         self.num_iterations = int(args.num_iterations)
         self.lr = args.lr
+        self.dataset = args.dataset
         self.interval_visualize = args.interval_visualize
         self.interval_checkpoint = args.interval_checkpoint
         self.interval_delete_checkpoint = args.interval_delete_checkpoint
@@ -115,7 +110,7 @@ class Trainer(object):
         print("preparing dataloader")
         self.dataloader = get_dataloader(
             category=self.category,
-            dataset=args.dataset,
+            dataset=self.dataset,
             split="train",
             batch_size=self.batch_size,
             num_workers=num_workers,
@@ -127,8 +122,7 @@ class Trainer(object):
             num_pe_bases=8,
             hidden_size=256,
             sample_mode=args.sampling_mode,
-            recursion_level=args.recursion_level,
-            num_queries=36864,  # To match recursion level = 3
+            num_queries=36864,  # To match Healpy recursion level = 3
             freeze_encoder=self.freeze_encoder,
         )
         self.net = DataParallel(self.net, device_ids=list(range(args.num_gpus)))
@@ -260,6 +254,7 @@ class Trainer(object):
                         print_results=True,
                         use_pbar=True,
                         categories=TEST_CATEGORIES,
+                        dataset=self.dataset,
                     )
                     for k, v in errors_15.items():
                         self.writer.add_scalar(f"Val/{k}@15", v, self.iteration)
@@ -324,14 +319,17 @@ class Trainer(object):
 
         visuals = []
         for i in range(len(images1)):
-            image1 = unnormalize_image(cv2.resize(images1[i], (448, 448)))
-            image2 = unnormalize_image(cv2.resize(images2[i], (448, 448)))
+            # image1 = unnormalize_image(cv2.resize(images1[i], (448, 448)))
+            # image2 = unnormalize_image(cv2.resize(images2[i], (448, 448)))
+            image1 = unnormalize_image(images1[i])
+            image2 = unnormalize_image(images2[i])
             so3_vis = visualize_so3_probabilities(
                 rotations=rotations[i],
                 probabilities=probabilities[i],
                 rotations_gt=rotations[i, 0],
                 to_image=True,
                 display_threshold_probability=1 / len(probabilities[i]),
+                dpi=112
             )
             full_image = np.vstack((np.hstack((image1, image2)), so3_vis))
             if model_id is not None:

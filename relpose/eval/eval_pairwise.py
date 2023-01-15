@@ -13,7 +13,7 @@ import numpy as np
 import torch
 from tqdm.auto import tqdm
 
-from relpose.dataset.co3dv1 import TEST_CATEGORIES, Co3dDataset
+from relpose.dataset.co3dv1 import TEST_CATEGORIES, Co3dv1Dataset
 from relpose.eval.load_model import get_model
 
 
@@ -48,14 +48,15 @@ def get_permutations(num_frames):
     return torch.tensor(permutations)
 
 
-def get_dataset(category="banana", split="train", params={}):
-    dataset = Co3dDataset(
-        split=split,
-        category=[category],
-        random_aug=False,
-    )
-    return dataset
-
+def get_dataset(category="banana", split="train", params={}, dataset="co3dv1"):
+    if dataset == "co3dv1":
+        return Co3dv1Dataset(
+            split=split,
+            category=[category],
+            random_aug=False,
+        )
+    else:
+        raise Exception(f"Unknown dataset {dataset}")
 
 def evaluate_category(
     model,
@@ -64,8 +65,9 @@ def evaluate_category(
     split="train",
     num_frames=5,
     use_pbar=False,
+    dataset="co3dv1",
 ):
-    dataset = get_dataset(category=category, split=split, params=params)
+    dataset = get_dataset(category=category, split=split, params=params, dataset=dataset)
     device = next(model.parameters()).device
 
     permutations = get_permutations(num_frames)

@@ -53,7 +53,7 @@ gcc/g++. Try: `CC=gcc CXX=g++ python setup.py install`.
 
 ### Dataset Preparation
 
-Please see [dataset.md](dataset.md) for instructions on preparing the CO3Dv1 dataset or
+Please see [docs/dataset.md](docs/dataset.md) for instructions on preparing the CO3Dv1 dataset or
 your own dataset.
 
 ## Inference
@@ -68,7 +68,7 @@ Current code release progress:
 - [x] Demo
 - [ ] Inference on CO3Dv1
 - [ ] Evaluation on CO3Dv1
-- [ ] Training on CO3Dv1
+- [x] Training on CO3Dv1
 - [ ] Training and Evaluation on CO3Dv2
 
 

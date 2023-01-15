@@ -17,3 +17,6 @@ python -m preprocess.preprocess_co3dv1 --category all \
 
 ## Preparing Your Own Dataset
 
+For inference on your own video
+
+
