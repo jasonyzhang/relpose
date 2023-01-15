@@ -3,10 +3,10 @@ black
 cython
 flake8
 gdown
-healpy
 ipdb
 isort
 jupyter
+matplotlib
 numpy
 opencv-python
 plotly

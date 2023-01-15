@@ -1,3 +1,10 @@
+"""
+Trainer for relpose. Default configuration is run with 4 GPUs. Currently only supports
+CO3Dv1 dataset.
+
+Usage:
+    python -m relpose.trainer --batch_size 64 --num_gpus 4 --output_dir output
+"""
 import argparse
 import datetime
 import json
@@ -17,8 +24,7 @@ from torch.utils.tensorboard import SummaryWriter
 from relpose.dataset import get_dataloader
 from relpose.dataset.co3dv1 import TEST_CATEGORIES, TRAINING_CATEGORIES
 from relpose.eval.eval_pairwise import evaluate_pairwise
-from relpose.models import RelPose, RelPoseRegressor, generate_hypotheses
-from relpose.utils.geometry import generate_noisy_rotation
+from relpose.models import RelPose
 from relpose.utils.visualize import unnormalize_image, visualize_so3_probabilities
 
 matplotlib.use("Agg")
@@ -40,7 +46,7 @@ def get_parser():
     parser.add_argument("--interval_evaluate", type=int, default=25000)
     parser.add_argument("--lr", type=float, default=0.001)
     parser.add_argument("--output_dir", type=str, default="output")
-    parser.add_argument("--dataset", type=str, default="co3d")
+    parser.add_argument("--dataset", type=str, default="co3dv1")
     parser.add_argument("--name", type=str, default="")
     parser.add_argument(
         "--recursion_level",
@@ -70,7 +76,6 @@ def get_parser():
         action="store_true",
         help="If True, freezes the image encoder.",
     )
-    parser.add_argument("--direct_regression", action="store_true")
     return parser
 
 
@@ -117,20 +122,15 @@ class Trainer(object):
             debug=self.debug,
         )
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        if self.direct_regression:
-            self.net = RelPoseRegressor(
-                num_images=self.num_images, freeze_encoder=self.freeze_encoder,
-            )
-        else:
-            self.net = RelPose(
-                num_layers=4,
-                num_pe_bases=8,
-                hidden_size=256,
-                sample_mode=args.sampling_mode,
-                recursion_level=args.recursion_level,
-                num_queries=36864,  # To match recursion level = 3
-                freeze_encoder=self.freeze_encoder,
-            )
+        self.net = RelPose(
+            num_layers=4,
+            num_pe_bases=8,
+            hidden_size=256,
+            sample_mode=args.sampling_mode,
+            recursion_level=args.recursion_level,
+            num_queries=36864,  # To match recursion level = 3
+            freeze_encoder=self.freeze_encoder,
+        )
         self.net = DataParallel(self.net, device_ids=list(range(args.num_gpus)))
         self.net.to(self.device)
         self.start_time = None
@@ -141,16 +141,13 @@ class Trainer(object):
             name += "_debug"
         name += args.name
         name += f"_{args.dataset}"
-        if args.dataset == "co3d":
-            name += f"_ncat{len(self.category)}"
+        if "co3d" in args.dataset:
             if len(self.category) != len(TRAINING_CATEGORIES):
                 name += f"{'-'.join(sorted(args.category))}"
         if args.sampling_mode != "equivolumetric":
             name += f"_{args.sampling_mode}"
         if self.batch_size != 64:
             name += f"_b{args.batch_size}"
-        if args.direct_regression:
-            name += "_direct"
         if args.lr != 0.001:
             name += f"_lr{args.lr}"
 
@@ -174,7 +171,6 @@ class Trainer(object):
                 json.dump(vars(args), f)
             # Make a copy of the code.
             shutil.copytree("relpose", osp.join(self.output_dir, "relpose"))
-
             print("Output Directory:", self.output_dir)
 
         if args.pretrained != "":
@@ -185,130 +181,27 @@ class Trainer(object):
             )
 
         # Setup tensorboard.
-        self.writer = SummaryWriter(log_dir=self.output_dir, flush_secs=10)
+        self.writer = SummaryWriter(log_dir=self.output_dir, flush_secs=30)
 
     def train(self):
         optimizer = torch.optim.AdamW(self.net.parameters(), lr=self.lr)
-        permutations = list(get_permutations(self.num_images))  # For N > 2.
         while self.iteration < self.num_iterations:
             for batch in self.dataloader:
                 images = batch["image"].to(self.device, non_blocking=True)
                 optimizer.zero_grad()
-                if self.num_images == 2:
-                    image1 = images[:, 0]
-                    image2 = images[:, 1]
-                    if self.append_image:
-                        image3 = images[:, -1]
-                    if self.perspective_correction == "coords":
-                        bbox1 = batch["bbox_normalized_1"].to(
-                            self.device, non_blocking=True
-                        )
-                        bbox2 = batch["bbox_normalized_2"].to(
-                            self.device, non_blocking=True
-                        )
-                        metadata = torch.cat((bbox1, bbox2), dim=1)
-                    else:
-                        metadata = None
-                    relative_rotation = batch["relative_rotation"].to(
-                        self.device, non_blocking=True
-                    )
-                    if self.eps_noise > 0:
-                        noise = generate_noisy_rotation(
-                            n=len(relative_rotation),
-                            eps=self.eps_noise,
-                            degrees=True,
-                            device=self.device,
-                        )
-                        relative_rotation = torch.bmm(relative_rotation, noise)
-                    if self.direct_regression:
-                        rotation_pred = self.net(images1=image1, images2=image2,)
-                        # loss = torch.mean((rotation_pred - relative_rotation) ** 2)
-                        # err = (relative_rotation - rotation_pred).norm(dim=(1, 2)) ** 2
-                        # loss = torch.mean(err)
-                        if self.old_multiply:
-                            delta_rot = torch.einsum(
-                                "aij,akj->aik", relative_rotation, rotation_pred
-                            )
-                        else:
-                            delta_rot = torch.einsum(
-                                "aji,ajk->aik", rotation_pred, relative_rotation
-                            )
-                        trace = torch.einsum("aii->a", delta_rot)
-                        loss = torch.mean(3 - trace)
+                image1 = images[:, 0]
+                image2 = images[:, 1]
 
-                        # These are for visualization.
-                        # (B, 2, 3, 3)
-                        queries = torch.stack([relative_rotation, rotation_pred], dim=1)
-                        # (B, 2)
-                        logits = torch.tensor([0.0, 1], device=self.device).repeat(5, 1)
-                    else:
-                        queries, logits = self.net(
-                            images1=image1,
-                            images2=image2,
-                            images3=image3 if self.append_image else None,
-                            gt_rotation=relative_rotation,
-                            metadata=metadata,
-                        )
-                        log_prob = torch.log_softmax(logits, dim=-1)
-                        if self.soft_loss_threshold > 0:
-                            delta_rot = torch.einsum(
-                                "abij,akj->abik", queries, relative_rotation
-                            )
-                            trace = torch.einsum("abii->ab", delta_rot)
-                            dist = torch.arccos(torch.clamp((trace - 1) / 2, -1, 1))
-                            dist = dist * 180 / np.pi  # Convert to degrees.
-                            if self.use_gaussian:
-                                sigma = self.soft_loss_threshold
-                                weights = torch.exp(-0.5 * (dist / sigma) ** 2)
-                                # Zero out far away rotations.
-                                weights[dist > 3 * sigma] = 0
-                            else:
-                                weights = (dist < self.soft_loss_threshold).float()
-                            weights_norm = weights / weights.sum(dim=-1, keepdim=True)
-                            loss = -torch.sum(weights_norm * log_prob) / self.batch_size
-                        else:
-                            loss = -torch.mean(log_prob[:, 0])
-                else:
-                    rotations_gt = batch["R"].to(self.device, non_blocking=True)
-                    num_queries = 36864
-                    num_queries = 10000
-                    hypotheses = generate_hypotheses(  # (B, N_I, N_q, 3, 3)
-                        rotations_gt=rotations_gt, num_queries=num_queries,
-                    )
-                    scores = torch.zeros(
-                        (self.batch_size, num_queries), device=self.device
-                    )
-                    features = [
-                        self.net.module.feature_extractor(images[:, i])
-                        for i in range(self.num_images)
-                    ]
-                    if self.num_permutations > len(permutations):
-                        perm_ids = np.random.choice(
-                            len(permutations), self.num_permutations, replace=False
-                        )
-                        perm = permutations[perm_ids]
-                    else:
-                        perm = permutations
-                    for i, j in perm:
-                        image1 = images[:, i]
-                        image2 = images[:, j]
-                        R1 = hypotheses[:, i]
-                        R2 = hypotheses[:, j]
-                        if self.old_multiply:
-                            # R2 @ R1.T
-                            relative_rotations = torch.einsum("abij,abkj->abik", R2, R1)
-                        else:
-                            # R1.T @ R2
-                            relative_rotations = torch.einsum("abji,abjk->abik", R1, R2)
-                        queries, logits = self.net(
-                            features1=features[i],
-                            features2=features[j],
-                            queries=relative_rotations,
-                        )
-                        scores += logits
-                    log_probs = torch.log_softmax(scores, dim=-1)
-                    loss = -torch.mean(log_probs[:, 0])
-
+                relative_rotation = batch["relative_rotation"].to(
+                    self.device, non_blocking=True
+                )
+                queries, logits = self.net(
+                    images1=image1,
+                    images2=image2,
+                    gt_rotation=relative_rotation,
+                )
+                log_prob = torch.log_softmax(logits, dim=-1)
+                loss = -torch.mean(log_prob[:, 0])
                 loss.backward()
                 optimizer.step()
 
@@ -358,17 +251,8 @@ class Trainer(object):
 
                 self.iteration += 1
 
-                if (
-                    not self.direct_regression
-                    and self.iteration % self.interval_evaluate == 0
-                ):
-                    del (
-                        images,
-                        image1,
-                        image2,
-                        queries,
-                        logits,
-                    )
+                if self.iteration % self.interval_evaluate == 0:
+                    del images, image1, image2, queries, logits
                     errors_15, errors_30 = evaluate_pairwise(
                         self.net,
                         params=vars(self.args),
@@ -376,7 +260,6 @@ class Trainer(object):
                         print_results=True,
                         use_pbar=True,
                         categories=TEST_CATEGORIES,
-                        old_split=False,
                     )
                     for k, v in errors_15.items():
                         self.writer.add_scalar(f"Val/{k}@15", v, self.iteration)

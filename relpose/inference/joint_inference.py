@@ -17,7 +17,9 @@ def get_permutations(num_frames):
 def score_hypothesis(hypothesis, model, permutations, features):
     R_pred_batched = hypothesis[permutations]
     R_pred_rel = torch.einsum(
-        "Bij,Bjk ->Bik", R_pred_batched[:, 0].permute(0, 2, 1), R_pred_batched[:, 1],
+        "Bij,Bjk ->Bik",
+        R_pred_batched[:, 0].permute(0, 2, 1),
+        R_pred_batched[:, 1],
     )
     features_batched = features[permutations]
     _, logits = model(
@@ -78,7 +80,11 @@ def run_maximum_spanning_tree(model, images, num_frames):
         image1 = images[i].unsqueeze(0).to(device)
         image2 = images[j].unsqueeze(0).to(device)
         with torch.no_grad():
-            queries, logits = model(images1=image1, images2=image2, recursion_level=4,)
+            queries, logits = model(
+                images1=image1,
+                images2=image2,
+                recursion_level=4,
+            )
         probabilities = torch.softmax(logits, -1)
         probabilities = probabilities[0].detach().cpu().numpy()
         best_prob = probabilities.max()
@@ -88,7 +94,9 @@ def run_maximum_spanning_tree(model, images, num_frames):
         best_probs[i, j] = best_prob
 
     rotations_pred, edges = compute_mst(
-        num_frames=num_frames, best_probs=best_probs, best_rotations=best_rotations,
+        num_frames=num_frames,
+        best_probs=best_probs,
+        best_rotations=best_rotations,
     )
     return rotations_pred
 
@@ -120,7 +128,9 @@ def run_coordinate_ascent(
             R_rel = hypothesis[i].T @ proposals
             with torch.no_grad():
                 _, logits = model(
-                    features1=feature1, features2=feature2, queries=R_rel.unsqueeze(0),
+                    features1=feature1,
+                    features2=feature2,
+                    queries=R_rel.unsqueeze(0),
                 )
                 scores += logits
                 _, logits = model(

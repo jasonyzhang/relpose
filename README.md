@@ -12,7 +12,7 @@ Follow directions for setting up CO3Dv1 from [here](dataset.md)
 We recommend using conda to manage dependencies. Make sure to install a cudatoolkit
 compatible with your GPU.
 ```
-git clone https://github.com/jasonyzhang/relpose.git
+git clone --depth 1 https://github.com/jasonyzhang/relpose.git
 conda create -n relpose python=3.8
 conda activate relpose
 conda install pytorch==1.12.0 torchvision==0.13.0 cudatoolkit=11.3 -c pytorch
@@ -37,7 +37,7 @@ for troubleshooting and additional details.
 mkdir -p external
 git clone --depth 1 --branch v0.7.0 https://github.com/facebookresearch/pytorch3d.git external/pytorch3d
 cd external/pytorch3d
-conda activate ners
+conda activate relpose
 conda install -c conda-forge -c fvcore -c iopath -c bottler fvcore iopath nvidiacub
 python setup.py install
 ```
