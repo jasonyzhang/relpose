@@ -58,6 +58,7 @@ def get_dataset(category="banana", split="train", params={}, dataset="co3dv1"):
     else:
         raise Exception(f"Unknown dataset {dataset}")
 
+
 def evaluate_category(
     model,
     params,
@@ -67,7 +68,9 @@ def evaluate_category(
     use_pbar=False,
     dataset="co3dv1",
 ):
-    dataset = get_dataset(category=category, split=split, params=params, dataset=dataset)
+    dataset = get_dataset(
+        category=category, split=split, params=params, dataset=dataset
+    )
     device = next(model.parameters()).device
 
     permutations = get_permutations(num_frames)
@@ -121,6 +124,7 @@ def evaluate_pairwise(
     print_results=True,
     use_pbar=False,
     categories=TEST_CATEGORIES,
+    dataset="co3dv1",
 ):
     if model is None or params is None:
         print(checkpoint_path)
@@ -136,6 +140,7 @@ def evaluate_pairwise(
             split=split,
             num_frames=num_frames,
             use_pbar=use_pbar,
+            dataset=dataset,
         )
         errors_15[category] = np.mean(angular_errors < 15)
         errors_30[category] = np.mean(angular_errors < 30)

@@ -3,10 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from relpose.utils.geometry import (
-    generate_superfibonacci,
-    generate_random_rotations,
-)
+from relpose.utils.geometry import generate_random_rotations, generate_superfibonacci
 
 
 def generate_hypotheses(rotations_gt, num_queries=50000):
@@ -195,5 +192,5 @@ class RelPose(nn.Module):
             recursion_level=recursion_level,
         )
         probabilities = torch.softmax(logits, dim=-1)
-        probabilities = probabilities * num_queries / np.pi ** 2
+        probabilities = probabilities * num_queries / np.pi**2
         return probabilities[:, 0]

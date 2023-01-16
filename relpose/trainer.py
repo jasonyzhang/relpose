@@ -329,7 +329,7 @@ class Trainer(object):
                 rotations_gt=rotations[i, 0],
                 to_image=True,
                 display_threshold_probability=1 / len(probabilities[i]),
-                dpi=112
+                dpi=112,
             )
             full_image = np.vstack((np.hstack((image1, image2)), so3_vis))
             if model_id is not None:

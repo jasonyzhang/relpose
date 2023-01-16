@@ -8,9 +8,9 @@ import torch
 import torchvision
 from tqdm.auto import tqdm
 
-from relpose.eval.load_model import get_model, get_eval_dataset
-from relpose.utils import get_permutations
 from relpose.dataset.co3dv1 import TEST_CATEGORIES
+from relpose.eval.load_model import get_eval_dataset, get_model
+from relpose.utils import get_permutations
 
 
 def compute_angular_error(rotation1, rotation2):
@@ -28,7 +28,12 @@ def compute_angular_error_batch(rotation1, rotation2):
 
 
 def evaluate_category(
-    model, params, category="banana", split="train", num_frames=5, use_pbar=False,
+    model,
+    params,
+    category="banana",
+    split="train",
+    num_frames=5,
+    use_pbar=False,
 ):
     dataset = get_eval_dataset(category=category, split=split, params=params)
     device = next(model.parameters()).device
@@ -46,7 +51,8 @@ def evaluate_category(
         images_permuted = images[permutations]
         rotations_permuted = rotations[permutations]
         rotations_gt = torch.bmm(
-            rotations_permuted[:, 1], rotations_permuted[:, 0].transpose(1, 2),
+            rotations_permuted[:, 1],
+            rotations_permuted[:, 0].transpose(1, 2),
         )
         images1 = images_permuted[:, 0].to(device)
         images2 = images_permuted[:, 1].to(device)

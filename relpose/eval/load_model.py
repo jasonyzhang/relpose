@@ -4,8 +4,8 @@ import os.path as osp
 
 import torch
 
-from relpose.models import RelPose
 from relpose.dataset import Co3dv1Dataset
+from relpose.models import RelPose
 
 
 def get_model(checkpoint, device="cuda:0"):
