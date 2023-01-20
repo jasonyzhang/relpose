@@ -83,7 +83,6 @@ def run_maximum_spanning_tree(model, images, num_frames):
             queries, logits = model(
                 images1=image1,
                 images2=image2,
-                recursion_level=4,
             )
         probabilities = torch.softmax(logits, -1)
         probabilities = probabilities[0].detach().cpu().numpy()

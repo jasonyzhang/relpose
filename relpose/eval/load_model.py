@@ -23,12 +23,12 @@ def get_model(checkpoint, device="cuda:0"):
     }
     args_path = osp.join(osp.dirname(osp.dirname(checkpoint)), "args.json")
     if osp.exists(args_path):
-        with open() as f:
+        with open(args_path) as f:
             args = json.load(f)
         args["output_dir"] = osp.dirname(osp.dirname(checkpoint))
     else:
         args = {}
-    relpose = RelPose(sample_mode="equivolumetric", recursion_level=4)
+    relpose = RelPose(sample_mode="equivolumetric")
     relpose.to(device)
     relpose.load_state_dict(pretrained_weights)
     relpose.eval()
@@ -36,6 +36,8 @@ def get_model(checkpoint, device="cuda:0"):
 
 
 def get_eval_dataset(category, split, dataset="co3dv1"):
+    if isinstance(category, str):
+        category = [category]
     if dataset == "co3dv1":
         dataset = Co3dv1Dataset(category, split, random_aug=False)
     else:

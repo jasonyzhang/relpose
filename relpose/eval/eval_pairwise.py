@@ -101,7 +101,6 @@ def evaluate_category(
                 queries, logits = model(
                     images1=image1.unsqueeze(0),
                     images2=image2.unsqueeze(0),
-                    recursion_level=4,
                     gt_rotation=rotation_gt.to(device).unsqueeze(0),
                 )
 

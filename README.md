@@ -21,10 +21,11 @@ pip install -r requirements.txt
 
 ### Model Weights
 
-You can download the pre-trained model weights from [Google Drive](https://drive.google.com/file/d/1RCLXmjUi0ER87nBFsnnZL-hPudZU99h9/view?usp=sharing).
+You can download the pre-trained model weights from [Google Drive](https://drive.google.com/file/d/1XwRjxOzqj6DXGg_bzYFy83iDlZx8mkQ-/view?usp=share_link).
 Alternatively, you can use gdown:
 ```
-gdown --output data/relpose_co3dv1.pth https://drive.google.com/uc?id=1RCLXmjUi0ER87nBFsnnZL-hPudZU99h9
+gdown --output data/pretrained_relpose.zip https://drive.google.com/uc?id=1XwRjxOzqj6DXGg_bzYFy83iDlZx8mkQ-
+unzip data/pretrained_relpose.zip -d data
 ```
 
 ### Installing Pytorch3d
@@ -53,8 +54,7 @@ gcc/g++. Try: `CC=gcc CXX=g++ python setup.py install`.
 
 ### Dataset Preparation
 
-Please see [docs/dataset.md](docs/dataset.md) for instructions on preparing the CO3Dv1 dataset or
-your own dataset.
+Please see [docs/dataset.md](docs/dataset.md) for instructions on preparing the CO3Dv1 dataset or your own dataset.
 
 ## Inference
 
@@ -66,8 +66,8 @@ Spanning Tree and Coordinate Ascent for joint camera pose inference.
 
 Current code release progress:
 - [x] Demo
-- [ ] Inference on CO3Dv1
-- [ ] Evaluation on CO3Dv1
+- [x] Evaluation on CO3Dv1
+    - [ ] Coordinate Ascent Evaluation
 - [x] Training on CO3Dv1
 - [ ] Training and Evaluation on CO3Dv2
 

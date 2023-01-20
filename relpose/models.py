@@ -80,7 +80,7 @@ class RelPose(nn.Module):
         for _ in range(num_layers - 2):
             layers.append(nn.LeakyReLU())
             layers.append(nn.Linear(hidden_size, hidden_size))
-        # Yes, I forgot to add a non-linearity here. This will be fixed later.
+        layers.append(nn.LeakyReLU())
         layers.append(nn.Linear(hidden_size, 1))
         self.layers = nn.Sequential(*layers)
         self.equi_grid = {}
@@ -171,7 +171,7 @@ class RelPose(nn.Module):
         return queries, logits
 
     def predict_probability(
-        self, images1, images2, query_rotation, recursion_level=None, num_queries=None
+        self, images1, images2, query_rotation, num_queries=None
     ):
         """
         Args:
@@ -189,7 +189,6 @@ class RelPose(nn.Module):
             images2,
             gt_rotation=query_rotation,
             num_queries=num_queries,
-            recursion_level=recursion_level,
         )
         probabilities = torch.softmax(logits, dim=-1)
         probabilities = probabilities * num_queries / np.pi**2
