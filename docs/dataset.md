@@ -17,6 +17,7 @@ python -m preprocess.preprocess_co3dv1 --category all \
 
 ## Preparing Your Own Dataset
 
-For inference on your own video
-
-
+For inference on your own video, you can use the `CustomDataset` class in
+`relpose/dataset/custom.py`. You will need to provide a directory of images and a
+directory of masks or bounding boxes. The masks are simply used to compute bounding
+boxes.

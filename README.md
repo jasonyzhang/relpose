@@ -63,6 +63,11 @@ pairwise relative pose distributions given 2 images as well as recovering camera
 rotations using the pairwise predictor. Currently, the demo supports using a Maximum
 Spanning Tree and Coordinate Ascent for joint camera pose inference.
 
+## Evaluation
+
+Please see [docs/eval.md](docs/eval.md) for instructions on evaluating on sequential,
+MST, and coordinate ascent inference.
+
 
 Current code release progress:
 - [x] Demo

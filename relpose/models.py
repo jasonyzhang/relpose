@@ -170,9 +170,7 @@ class RelPose(nn.Module):
         logits = out.reshape(batch_size, num_queries)
         return queries, logits
 
-    def predict_probability(
-        self, images1, images2, query_rotation, num_queries=None
-    ):
+    def predict_probability(self, images1, images2, query_rotation, num_queries=None):
         """
         Args:
             images1 (tensor): First set of images (B, 3, 224, 224).

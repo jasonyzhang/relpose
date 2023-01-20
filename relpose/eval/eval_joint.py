@@ -25,10 +25,10 @@ import numpy as np
 import torch
 from tqdm.auto import tqdm
 
-from relpose.dataset.co3dv1 import TRAINING_CATEGORIES, TEST_CATEGORIES, Co3dv1Dataset
-from relpose.eval import compute_angular_error_batch, get_model, get_eval_dataset
-from relpose.utils import get_permutations
+from relpose.dataset.co3dv1 import TEST_CATEGORIES, TRAINING_CATEGORIES, Co3dv1Dataset
+from relpose.eval import compute_angular_error_batch, get_eval_dataset, get_model
 from relpose.inference.joint_inference import compute_mst, run_coordinate_ascent
+from relpose.utils import get_permutations
 
 
 def get_parser():
