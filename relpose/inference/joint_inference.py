@@ -109,6 +109,21 @@ def run_coordinate_ascent(
     num_queries=250_000,
     use_pbar=True,
 ):
+    """
+    Args:
+        model (nn.Module): RelPose model.
+        images (torch.Tensor): Tensor of shape (N, 3, H, W) containing the images.
+        num_frames (int): Number of frames in the sequence.
+        initial_hypothesis (np.ndarray): Initial hypothesis of shape (N, 3, 3).
+        num_iterations (int): Number of iterations to run coordinate ascent. Defaults
+            to 200.
+        num_queries (int): Number of queries to use for each coordinate ascent. Defaults
+            to 250,000.
+        use_pbar (bool): Whether to use a progress bar. Defaults to True.
+
+    Returns:
+        torch.tensor: Final hypothesis of shape (N, 3, 3).
+    """
     device = images.device
     hypothesis = torch.from_numpy(initial_hypothesis).to(device).float()
     features = model.feature_extractor(images.to(device))

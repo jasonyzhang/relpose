@@ -15,7 +15,10 @@ ARGUMENTS = {
     "num_frames": [20, 10, 5, 3],
     "dataset": ["co3dv1"],
     "categories_type": ["seen", "unseen"],
-    "mode": ["sequential", "mst"],
+    # "mode": ["sequential", "mst"],
+    "mode": ["coord_asc"],
+    "index": [0, 1, 2, 3, 4, 5, 6, 7],
+    "skip": [8],
 }
 
 
@@ -40,6 +43,6 @@ def main(output_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("output_path", type=str)
+    parser.add_argument("output_path", type=str, default="eval_jobs.sh")
     args = parser.parse_args()
     main(args.output_path)

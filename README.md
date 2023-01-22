@@ -72,7 +72,6 @@ MST, and coordinate ascent inference.
 Current code release progress:
 - [x] Demo
 - [x] Evaluation on CO3Dv1
-    - [ ] Coordinate Ascent Evaluation
 - [x] Training on CO3Dv1
 - [ ] Training and Evaluation on CO3Dv2
 

@@ -25,9 +25,13 @@ import numpy as np
 import torch
 from tqdm.auto import tqdm
 
-from relpose.dataset.co3dv1 import TEST_CATEGORIES, TRAINING_CATEGORIES, Co3dv1Dataset
+from relpose.dataset.co3dv1 import TEST_CATEGORIES, TRAINING_CATEGORIES
 from relpose.eval import compute_angular_error_batch, get_eval_dataset, get_model
-from relpose.inference.joint_inference import compute_mst, run_coordinate_ascent
+from relpose.inference.joint_inference import (
+    compute_mst,
+    run_coordinate_ascent,
+    score_hypothesis,
+)
 from relpose.utils import get_permutations
 
 
@@ -57,6 +61,12 @@ def get_parser():
         default=250_000,
         type=int,
         help="Number of queries to use for coordinate ascent.",
+    )
+    parser.add_argument(
+        "--num_iterations",
+        default=200,
+        type=int,
+        help="Number of iterations to use for coordinate ascent.",
     )
     parser.add_argument(
         "--force", action="store_true", help="If True, replaces existing results."
@@ -255,6 +265,105 @@ def evaluate_category_mst(
     return np.array(angular_errors)
 
 
+def evaluate_category_coord_asc(
+    model,
+    category,
+    split="train",
+    num_iterations=200,
+    num_frames=5,
+    use_pbar=False,
+    save_dir=None,
+    force=False,
+    dataset="co3dv1",
+    num_queries=250_000,
+    skip=1,
+    index=0,
+    random_order=False,
+):
+    dataset = get_eval_dataset(category=category, split=split, dataset=dataset)
+    device = next(model.parameters()).device
+    permutations = get_permutations(num_frames)
+
+    if random_order:
+        order = np.load(osp.join("data", "sequence_order", f"{category}-known.npz"))
+
+    angular_errors = []
+    iterator = np.arange(len(dataset))[index::skip]
+    for i in tqdm(iterator):
+        metadata = dataset[i]
+        n = metadata["n"]
+        if num_frames > n:
+            continue
+        sequence_name = metadata["model_id"]
+
+        r = "-random" if random_order else "-uniform"
+        output_file = osp.join(
+            save_dir, f"{category}-{sequence_name}-{split}-{num_frames:03d}{r}.json"
+        )
+        if osp.exists(output_file) and not force:
+            with open(output_file) as f:
+                data = json.load(f)
+            angular_errors.extend(data["errors"])
+            continue
+
+        if random_order:
+            key_frames = sorted(order[sequence_name][:num_frames])
+        else:
+            key_frames = np.linspace(0, n - 1, num=num_frames, dtype=int)
+        batch = dataset.get_data(sequence_name=sequence_name, ids=key_frames)
+        images = batch["image"].to(device)
+        features = model.feature_extractor(images)
+        rotations = batch["R"]
+        rotations_gt = rotations.numpy()
+
+        mst_path = osp.join(
+            save_dir, "../mst", f"{category}-{split}-mst-{num_frames:03d}{r}.json"
+        )
+        with open(mst_path) as f:
+            mst_data = json.load(f)
+
+        initial_hypothesis = np.array(mst_data[sequence_name]["R_pred"])
+        rotations_pred = run_coordinate_ascent(
+            model=model,
+            images=images,
+            num_frames=num_frames,
+            initial_hypothesis=initial_hypothesis,
+            num_iterations=num_iterations,
+            num_queries=num_queries,
+            use_pbar=use_pbar,
+        )
+        score = score_hypothesis(
+            model=model,
+            hypothesis=rotations_pred,
+            permutations=torch.from_numpy(permutations),
+            features=features,
+        )
+        rotations_pred = rotations_pred.cpu().numpy()
+        R_pred_batched = rotations_pred[permutations]
+        R_pred_rel = np.einsum(
+            "Bij,Bjk ->Bik",
+            R_pred_batched[:, 0].transpose(0, 2, 1),
+            R_pred_batched[:, 1],
+        )
+        R_gt_batched = rotations_gt[permutations]
+        R_gt_rel = np.einsum(
+            "Bij,Bjk ->Bik",
+            R_gt_batched[:, 0].transpose(0, 2, 1),
+            R_gt_batched[:, 1],
+        )
+        errors = compute_angular_error_batch(R_pred_rel, R_gt_rel)
+
+        output_data = {
+            "joint_score": score.item(),
+            "errors": errors.tolist(),
+            "R_pred": rotations_pred.tolist(),
+        }
+        with open(output_file, "w") as f:
+            json.dump(output_data, f)
+        angular_errors.extend(errors)
+    return np.array(angular_errors)
+
+
 def evaluate_joint(
     model=None,
     checkpoint_path=None,
@@ -268,6 +377,7 @@ def evaluate_joint(
     save_output=True,
     force=False,
     num_queries=250_000,
+    num_iterations=200,
     random_order=False,
     reverse=False,
     index=0,
@@ -290,6 +400,7 @@ def evaluate_joint(
     eval_map = {
         "sequential": evaluate_category_sequential,
         "mst": evaluate_category_mst,
+        "coord_asc": evaluate_category_coord_asc,
     }
     eval_function = eval_map[mode]
 
@@ -314,6 +425,7 @@ def evaluate_joint(
             category=category,
             split=split,
             num_frames=num_frames,
+            num_iterations=num_iterations,
             use_pbar=use_pbar,
             save_dir=save_dir,
             force=force,
@@ -346,6 +458,7 @@ if __name__ == "__main__":
         split=args.split,
         dataset=args.dataset,
         num_queries=args.num_queries,
+        num_iterations=args.num_iterations,
         random_order=args.random_order,
         reverse=args.reverse,
         index=args.index,
