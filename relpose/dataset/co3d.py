@@ -1,5 +1,5 @@
 """
-CO3Dv1 dataset.
+CO3D (v2) dataset.
 """
 
 import gzip
@@ -11,11 +11,12 @@ import torch
 from PIL import Image, ImageFile
 from torch.utils.data import Dataset
 from torchvision import transforms
+from tqdm.auto import tqdm
 
 from relpose.utils.bbox import square_bbox
 
-CO3D_DIR = "data/co3d_v1"
-CO3D_ANNOTATION_DIR = "data/co3dv1_annotations"
+CO3D_DIR = "data/co3d"
+CO3D_ANNOTATION_DIR = "data/co3d_annotations"
 
 TRAINING_CATEGORIES = [
     "apple",
@@ -78,7 +79,7 @@ Image.MAX_IMAGE_PIXELS = None
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
-class Co3dv1Dataset(Dataset):
+class Co3dDataset(Dataset):
     def __init__(
         self,
         category=("all",),
@@ -90,18 +91,25 @@ class Co3dv1Dataset(Dataset):
         jitter_trans=(-0.07, 0.07),
         num_images=2,
     ):
+        """
+        Args:
+            category (list): List of categories to use.
+            split (str): "train" or "test".
+            transform (callable): Transformation to apply to the image.
+            random_aug (bool): Whether to apply random augmentation.
+            jitter_scale (tuple): Scale jitter range.
+            jitter_trans (tuple): Translation jitter range.
+            num_images: Number of images in each batch.
+        """
         if "all" in category:
             category = TRAINING_CATEGORIES
         category = sorted(category)
 
-        if split == "train":
-            split_name = "train_known"
-        elif split == "test":
-            split_name = "test_known"
+        split_name = split
 
         self.rotations = {}
         self.category_map = {}
-        for c in category:
+        for c in tqdm(category):
             annotation_file = osp.join(CO3D_ANNOTATION_DIR, f"{c}_{split_name}.jgz")
             with gzip.open(annotation_file, "r") as fin:
                 annotation = json.loads(fin.read())

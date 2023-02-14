@@ -1,6 +1,5 @@
 """
-Trainer for relpose. Default configuration is run with 4 GPUs. Currently only supports
-CO3Dv1 dataset.
+Trainer for relpose. Default configuration is run with 4 GPUs.
 
 Usage:
     python -m relpose.trainer --batch_size 64 --num_gpus 4 --output_dir output
@@ -22,7 +21,7 @@ from torch.nn import DataParallel
 from torch.utils.tensorboard import SummaryWriter
 
 from relpose.dataset import get_dataloader
-from relpose.dataset.co3dv1 import TEST_CATEGORIES, TRAINING_CATEGORIES
+from relpose.dataset.co3d import TEST_CATEGORIES, TRAINING_CATEGORIES
 from relpose.eval.eval_pairwise import evaluate_pairwise
 from relpose.models import RelPose
 from relpose.utils.visualize import unnormalize_image, visualize_so3_probabilities
@@ -46,7 +45,12 @@ def get_parser():
     parser.add_argument("--interval_evaluate", type=int, default=25000)
     parser.add_argument("--lr", type=float, default=0.001)
     parser.add_argument("--output_dir", type=str, default="output")
-    parser.add_argument("--dataset", type=str, default="co3dv1")
+    parser.add_argument(
+        "--dataset",
+        type=str,
+        default="co3d",
+        help="co3d or co3dv1. co3d refers to co3dv2",
+    )
     parser.add_argument("--name", type=str, default="")
     parser.add_argument(
         "--sampling_mode",
