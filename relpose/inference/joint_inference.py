@@ -17,7 +17,7 @@ def get_permutations(num_frames):
 def score_hypothesis(hypothesis, model, permutations, features):
     R_pred_batched = hypothesis[permutations]
     R_pred_rel = torch.einsum(
-        "Bij,Bjk ->Bik",
+        "bij,bjk ->bik",
         R_pred_batched[:, 0].permute(0, 2, 1),
         R_pred_batched[:, 1],
     )

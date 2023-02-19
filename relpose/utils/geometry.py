@@ -73,7 +73,7 @@ def generate_equivolumetric_grid(recursion_level=3):
     log = logging.getLogger("healpy")
     log.setLevel(logging.ERROR)  # Supress healpy linking warnings.
 
-    number_per_side = 2**recursion_level
+    number_per_side = 2 ** recursion_level
     number_pix = healpy.nside2npix(number_per_side)
     s2_points = healpy.pix2vec(number_per_side, np.arange(number_pix))
     s2_points = torch.tensor(np.stack([*s2_points], 1))
@@ -81,7 +81,7 @@ def generate_equivolumetric_grid(recursion_level=3):
     azimuths = torch.atan2(s2_points[:, 1], s2_points[:, 0])
     # torch doesn't have endpoint=False for linspace yet.
     tilts = torch.tensor(
-        np.linspace(0, 2 * np.pi, 6 * 2**recursion_level, endpoint=False)
+        np.linspace(0, 2 * np.pi, 6 * 2 ** recursion_level, endpoint=False)
     )
     polars = torch.arccos(s2_points[:, 2])
     grid_rots_mats = []

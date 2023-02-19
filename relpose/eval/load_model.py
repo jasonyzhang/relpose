@@ -4,7 +4,7 @@ import os.path as osp
 
 import torch
 
-from relpose.dataset import Co3dv1Dataset
+from relpose.dataset import Co3dDataset, Co3dv1Dataset
 from relpose.models import RelPose
 
 
@@ -40,6 +40,8 @@ def get_eval_dataset(category, split, dataset="co3dv1"):
         category = [category]
     if dataset == "co3dv1":
         dataset = Co3dv1Dataset(category, split, random_aug=False)
+    if dataset in ["co3d", "co3dv2"]:
+        dataset = Co3dDataset(category, split, random_aug=False)
     else:
         raise ValueError(f"Unknown dataset {dataset}")
     return dataset

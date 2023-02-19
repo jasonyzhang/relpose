@@ -11,14 +11,13 @@ import itertools
 
 BASE_CMD = "python -m relpose.eval.eval_joint "
 ARGUMENTS = {
-    "checkpoint": ["output/0116_1415_co3dv1"],
+    "checkpoint": ["output/0214_0106_co3d"],
+    "mode": ["mst", "sequential", "coord_asc"],
     "num_frames": [20, 10, 5, 3],
-    "dataset": ["co3dv1"],
+    "dataset": ["co3d"],
     "categories_type": ["seen", "unseen"],
-    # "mode": ["sequential", "mst"],
-    "mode": ["coord_asc"],
-    "index": [0, 1, 2, 3, 4, 5, 6, 7],
-    "skip": [8],
+    "index": [0, 1, 2, 3],
+    "skip": [4],
 }
 
 

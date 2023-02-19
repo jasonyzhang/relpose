@@ -26,6 +26,40 @@ from the MST solution.
 These models were retrained and may not match the numbers in the paper. There may also
 be some stochasticiy in the runs.
 
+### CO3Dv2
+
+Expected evaluation results (Uniform, seen categories):
+```
+Sequential  N=3  N=5 N=10 N=20
+Acc <15°   0.38 0.36 0.33 0.29
+Acc <30°   0.61 0.59 0.57 0.54
+
+MST         N=3  N=5 N=10 N=20
+Acc <15°   0.38 0.44 0.46 0.43
+Acc <30°   0.61 0.63 0.64 0.61
+
+Coord Asc   N=3  N=5 N=10 N=20
+Acc <15°   0.81 0.57 0.56 0.55
+Acc <30°   0.91 0.73 0.73 0.72
+```
+
+
+Expected evaluation results (Uniform, unseen categories):
+```
+Sequential  N=3  N=5 N=10 N=20
+Acc <15°   0.28 0.27 0.27 0.24
+Acc <30°   0.48 0.46 0.47 0.47
+
+MST         N=3  N=5 N=10 N=20
+Acc <15°   0.29 0.32 0.37 0.37
+Acc <30°   0.48 0.50 0.52 0.53
+
+Coord Asc   N=3  N=5 N=10 N=20
+Acc <15°   0.75 0.49 0.45 0.47
+Acc <30°   0.86 0.63 0.62 0.62
+```
+
+
 ### CO3Dv1
 
 Expected evaluation results (Uniform, seen categories):

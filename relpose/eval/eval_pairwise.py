@@ -13,6 +13,7 @@ import numpy as np
 import torch
 from tqdm.auto import tqdm
 
+from relpose.dataset.co3d import Co3dDataset
 from relpose.dataset.co3dv1 import TEST_CATEGORIES, Co3dv1Dataset
 from relpose.eval.load_model import get_model
 
@@ -51,6 +52,12 @@ def get_permutations(num_frames):
 def get_dataset(category="banana", split="train", params={}, dataset="co3dv1"):
     if dataset == "co3dv1":
         return Co3dv1Dataset(
+            split=split,
+            category=[category],
+            random_aug=False,
+        )
+    elif dataset in ["co3d", "co3dv2"]:
+        return Co3dDataset(
             split=split,
             category=[category],
             random_aug=False,

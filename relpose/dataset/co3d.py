@@ -109,7 +109,8 @@ class Co3dDataset(Dataset):
 
         self.rotations = {}
         self.category_map = {}
-        for c in tqdm(category):
+        iterable = tqdm(category) if len(category) > 1 else category
+        for c in category:
             annotation_file = osp.join(CO3D_ANNOTATION_DIR, f"{c}_{split_name}.jgz")
             with gzip.open(annotation_file, "r") as fin:
                 annotation = json.loads(fin.read())
