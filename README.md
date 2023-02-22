@@ -6,7 +6,7 @@
 
 ## Installation
 
-Follow directions for setting up CO3Dv1 from [here](dataset.md)
+Follow directions for setting up CO3D (v1 or v2) from [here](dataset.md)
 
 ### Setup
 We recommend using conda to manage dependencies. Make sure to install a cudatoolkit
@@ -21,7 +21,8 @@ pip install -r requirements.txt
 
 ### Model Weights
 
-You can download the pre-trained model weights from [Google Drive](https://drive.google.com/file/d/1XwRjxOzqj6DXGg_bzYFy83iDlZx8mkQ-/view?usp=share_link).
+You can download the pre-trained model weights on both CO3Dv1 and CO3Dv2from
+[Google Drive](https://drive.google.com/file/d/1XwRjxOzqj6DXGg_bzYFy83iDlZx8mkQ-/view?usp=share_link).
 Alternatively, you can use gdown:
 ```
 gdown --output data/pretrained_relpose.zip https://drive.google.com/uc?id=1XwRjxOzqj6DXGg_bzYFy83iDlZx8mkQ-
@@ -67,14 +68,6 @@ Spanning Tree and Coordinate Ascent for joint camera pose inference.
 
 Please see [docs/eval.md](docs/eval.md) for instructions on evaluating on sequential,
 MST, and coordinate ascent inference.
-
-
-Current code release progress:
-- [x] Demo
-- [x] Evaluation on CO3Dv1
-- [x] Training on CO3Dv1
-- [ ] Training and Evaluation on CO3Dv2
-
 
 ## <a name="CitingRelPose"></a>Citing RelPose
 
