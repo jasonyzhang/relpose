@@ -109,7 +109,9 @@ def evaluate_category_sequential(
     all_errors = {}
     angular_errors = []
     if random_order:
-        order = np.load(osp.join("data", "sequence_order", f"{category}-known.npz"))
+        # order = np.load(osp.join("data", "sequence_order", f"{category}-known.npz"))
+        with open(osp.join("data", "co3d_v2_random_order_0", f"{category}.json")) as f:
+            order = json.load(f)
     for metadata in iterable:
         n = metadata["n"]
         sequence_name = metadata["model_id"]
@@ -193,7 +195,8 @@ def evaluate_category_mst(
     permutations = get_permutations(num_frames)
 
     if random_order:
-        order = np.load(osp.join("data", "sequence_order", f"{category}-known.npz"))
+        with open(osp.join("data", "co3d_v2_random_order_0", f"{category}.json")) as f:
+            order = json.load(f)
 
     iterable = tqdm(dataset) if use_pbar else dataset
     all_errors = {}
@@ -285,7 +288,8 @@ def evaluate_category_coord_asc(
     permutations = get_permutations(num_frames)
 
     if random_order:
-        order = np.load(osp.join("data", "sequence_order", f"{category}-known.npz"))
+        with open(osp.join("data", "co3d_v2_random_order_0", f"{category}.json")) as f:
+            order = json.load(f)
 
     angular_errors = []
     iterator = np.arange(len(dataset))[index::skip]
@@ -309,7 +313,9 @@ def evaluate_category_coord_asc(
         if random_order:
             key_frames = sorted(order[sequence_name][:num_frames])
         else:
-            key_frames = np.linspace(0, n - 1, num=num_frames, dtype=int)
+            key_frames = np.linspace(
+                0, n - 1, num=num_frames, dtype=int, endpoint=False,
+            )
         batch = dataset.get_data(sequence_name=sequence_name, ids=key_frames)
         images = batch["image"].to(device)
         features = model.feature_extractor(images)
@@ -443,6 +449,14 @@ def evaluate_joint(
             print(
                 f"{category:>10s}{errors_15[category]:6.02f}{errors_30[category]:6.02f}"
             )
+    if index == 0 and skip == 1:
+        output_path = osp.join(
+            model_dir,
+            "eval",
+            f"{categories_type}-{mode}-N{num_frames:02d}.json",
+        )
+        with open(output_path, "w") as f:
+            json.dump({"errors_15": errors_15, "errors_30": errors_30}, f)
     return errors_15, errors_30
 
 
