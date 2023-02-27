@@ -21,7 +21,7 @@ pip install -r requirements.txt
 
 ### Model Weights
 
-You can download the pre-trained model weights on both CO3Dv1 and CO3Dv2from
+You can download the pre-trained model weights on both CO3Dv1 and CO3Dv2 from
 [Google Drive](https://drive.google.com/file/d/1XwRjxOzqj6DXGg_bzYFy83iDlZx8mkQ-/view?usp=share_link).
 Alternatively, you can use gdown:
 ```
@@ -56,6 +56,15 @@ gcc/g++. Try: `CC=gcc CXX=g++ python setup.py install`.
 ### Dataset Preparation
 
 Please see [docs/dataset.md](docs/dataset.md) for instructions on preparing the CO3Dv1 dataset or your own dataset.
+
+## Training
+
+Once the datasets are setup, run the following command to train on 4 GPUs on CO3Dv2:
+```
+python -m relpose.trainer --batch_size 64 --num_gpus 4 --output_dir output --dataset co3d
+```
+
+With 4 2080TI GPUs, we expect training to take a little less than 2 days.
 
 ## Inference
 
