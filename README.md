@@ -2,7 +2,7 @@
 
 [[`arXiv`](https://arxiv.org/abs/2208.05963)]
 [[`Project Page`](https://jasonyzhang.com/relpose/)]
-[[`Bibtex`](#CitingRelPose)]
+[[`Bibtex`](#citing-relpose)]
 
 ## Installation
 
