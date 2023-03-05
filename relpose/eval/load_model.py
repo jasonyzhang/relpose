@@ -40,7 +40,7 @@ def get_eval_dataset(category, split, dataset="co3dv1"):
         category = [category]
     if dataset == "co3dv1":
         dataset = Co3dv1Dataset(category, split, random_aug=False)
-    if dataset in ["co3d", "co3dv2"]:
+    elif dataset in ["co3d", "co3dv2"]:
         dataset = Co3dDataset(category, split, random_aug=False)
     else:
         raise ValueError(f"Unknown dataset {dataset}")
