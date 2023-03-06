@@ -450,10 +450,11 @@ def evaluate_joint(
                 f"{category:>10s}{errors_15[category]:6.02f}{errors_30[category]:6.02f}"
             )
     if index == 0 and skip == 1:
+        r = "random" if random_order else "uniform"
         output_path = osp.join(
             model_dir,
             "eval",
-            f"{categories_type}-{mode}-N{num_frames:02d}.json",
+            f"{categories_type}-{mode}-{r}-N{num_frames:02d}.json",
         )
         with open(output_path, "w") as f:
             json.dump({"errors_15": errors_15, "errors_30": errors_30}, f)
